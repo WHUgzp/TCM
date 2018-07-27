@@ -16,8 +16,8 @@ void check_ciphertext(byte *out,byte *outex,int nbyte)
 {
   if(memcmp(out,outex,nbyte)!=0)
   {
-    fprintf(stderr,"Error: incorrect ciphertext\n");
-//	printf("ciphertext error");
+    //fprintf(stderr,"Error: incorrect ciphertext\n");
+	printf("ciphertext error");
     //exit(EXIT_FAILURE);
   }
 }

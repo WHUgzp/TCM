@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define N 50
+
 byte sq[256]={
 0x00,0x01,0x04,0x05,0x10,0x11,0x14,0x15,
 0x40,0x41,0x44,0x45,0x50,0x51,0x54,0x55,
@@ -293,10 +295,10 @@ void square_share(byte *a,int n)
 // The shared multiplication SecMult of Rivain-Prouff
 void multshare(byte *a,byte *b,byte *c,int n)
 {
-  // Memory: 4 bytes
+  // Memory: 2*n*n+n*n+2 bytes
   int i,j; 
-  byte M[20][20];
-  byte r[20][20];
+  byte M[N][N];
+  byte r[N][N];
 
   matMult(a, b, M, n);
 
@@ -323,7 +325,7 @@ void multshare(byte *a,byte *b,byte *c,int n)
   }
 }
 
-void matMult(byte *a, byte *b, byte M[][20], int n)
+void matMult(byte *a, byte *b, byte M[][N], int n)
 {
 	int i, j;
 
@@ -339,7 +341,7 @@ void matMult(byte *a, byte *b, byte M[][20], int n)
 		byte *b_1 = b;
 		byte *b_2 = b + half;
 
-		byte M_11[20][20], M_12[20][20], M_21[20][20], M_22[20][20];
+		byte M_11[N][N], M_12[N][N], M_21[N][N], M_22[N][N];
 		for (i = 0; i < n; i++)
 		{
 			for (j = 0; j < n; j++)
@@ -401,19 +403,19 @@ void subbyte_rp_share(byte *a,int n)
 {
   // Memory: 5*n+5 byte 
   int i;
-  byte z[20];
+  byte z[N];
   memcpy(z,a,n);
   square_share(z,n);    // z=x^2     
 
-  byte y[20];
+  byte y[N];
   multshare(z,a,y,n);   // y=z*x=x^3
 
-  byte w[20];
+  byte w[N];
   memcpy(w,y,n);
   square_share(w,n);
   square_share(w,n);     // w=x^12
 
-  byte y2[20];
+  byte y2[N];
   multshare(y,w,y2,n);   // y2=x^15
 
   square_share(y2,n);
@@ -439,7 +441,7 @@ void subbytestate_rp(byte *state)
 
 void aes_rp(byte in[16],byte out[16],byte key[16])
 {
-  int i,j;
+  int i;
   int round=0;
   byte state[16];
   byte w[176];

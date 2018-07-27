@@ -46,12 +46,78 @@ void refresh(byte a[],int n)
 void refresh_table(byte a[], byte b[], int n)
 {
 	int i, j;
-
+	
 	for (i = 0; i<n; i++)
 	{
 		for (j = i + 1; j < n; j++)
 		{
 			byte tmp = xorshf96(); //rand();
+			a[i] = a[i] ^ tmp;
+			a[j] = a[j] ^ tmp;
+			b[i] = b[i] ^ tmp;
+			b[j] = b[j] ^ tmp;
+		}
+	}
+}
+
+void refresh_1(byte a[], int n)
+{
+	int i, j;
+	unsigned long tmpR;
+	byte randcount;
+
+	int w = sizeof(unsigned long);
+	randcount = 0;
+	tmpR = xorshf96(); //rand(); 
+	for (i = 0; i<n; i++)
+	{
+		for (j = i + 1; j < n; j++)
+		{
+			byte tmp = 0;
+			if (randcount < w) 
+			{
+				tmpR >>= (8 * randcount);
+				tmp = tmpR & 0xff;
+				randcount++;
+			}
+			else 
+			{
+				randcount = 0;
+				tmpR = xorshf96(); //rand(); 
+			}
+			
+			a[i] = a[i] ^ tmp;
+			a[j] = a[j] ^ tmp;
+		}
+	}
+}
+
+void refresh_table_1(byte a[], byte b[], int n)
+{
+	int i, j;
+	unsigned long tmpR;
+	byte randcount;
+	
+	int w = sizeof(unsigned long);
+	randcount = 0;
+	tmpR = xorshf96(); //rand(); 
+	for (i = 0; i<n; i++)
+	{
+		for (j = i + 1; j < n; j++)
+		{
+			byte tmp = 0;
+			if (randcount < w)
+			{
+				tmpR >>= (8 * randcount);
+				tmp = tmpR & 0xff;
+				randcount++;
+			}
+			else
+			{
+				randcount = 0;
+				tmpR = xorshf96(); //rand(); 
+			}
+			
 			a[i] = a[i] ^ tmp;
 			a[j] = a[j] ^ tmp;
 			b[i] = b[i] ^ tmp;

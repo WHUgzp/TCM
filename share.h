@@ -9,6 +9,8 @@ unsigned int get_randcount();
 
 void refresh(byte a[],int n);
 void refresh_table(byte a[], byte b[], int n);
+void refresh_1(byte a[], int n);
+void refresh_table_1(byte a[], byte b[], int n);
 void share(byte x,byte a[],int n);
 byte xorop(byte a[],int n);
 byte decode(byte a[],int n);

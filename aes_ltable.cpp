@@ -4,6 +4,7 @@
 #include <string.h>
 
 #define K 256
+#define N 50
 
 //void subbyte_ltable(byte *a, int n)
 //{
@@ -27,17 +28,17 @@
 void subbyte_ltable(byte *a, int n)
 {
 	//K*n + 2*n + n*n + n + 12
-	byte T[K][20];
-	byte Temp[2][20];
-	byte b[20][20];
-	byte y[20];
+	byte T[K][N];
+	byte Temp[2][N];
+	byte b[N][N];
+	byte y[N];
 	int i, j, m, h;
 	int table_num[8] = { 128, 64, 32, 16, 8, 4, 2, 1 };
 
 	for (i = 0; i < K; i++)
 	{
 		share(sbox[i], T[i], n);
-		refresh(T[i], n);
+		refresh_1(T[i], n);
 	}
 
 	for (m = 0; m < 8; m++)
@@ -46,7 +47,7 @@ void subbyte_ltable(byte *a, int n)
 		{
 			for (j = 0; j < n; j++)
 			{
-				refresh(a, n);
+				refresh_1(a, n);
 				for (i = 0; i < n; i++)
 				{
 					b[i][j] = (a[i] >> m) & 1;
@@ -61,7 +62,7 @@ void subbyte_ltable(byte *a, int n)
 					T[h][j] = Temp[0][j];
 					T[h + 1][j] = Temp[1][j];
 				}
-				refresh_table(T[h], T[h+1], n);
+				refresh_table_1(T[h], T[h+1], n);
 				
 			}
 		}
@@ -73,17 +74,17 @@ void subbyte_ltable(byte *a, int n)
 				T[h][j] = T[2 * h][j];
 			}
 			//memcpy(T[h], T[2 * h], n * sizeof(byte));
-			refresh(T[h], n);
+			refresh_1(T[h], n);
 		}
 	}
 
-	refresh(T[0], n);
+	refresh_1(T[0], n);
 	for (i = 0; i < n; i++) a[i] = T[0][i];
 }
 
-void lookup_table(byte T[][20], int m, int n, byte *a, byte *b)
+void lookup_table(byte T[][N], int m, int n, byte *a, byte *b)
 {
-	byte Tp[K][20];
+	byte Tp[K][N];
 	int i;
 
 //	printf("%d", m);
@@ -101,10 +102,10 @@ void lookup_table(byte T[][20], int m, int n, byte *a, byte *b)
 	}
 }
 
-void shift_table(byte T[][20], int m, int n, byte *a, byte Tp[][20])
+void shift_table(byte T[][N], int m, int n, byte *a, byte Tp[][N])
 {
-	byte Temp[K][20];
-	byte b[20][20];
+	byte Temp[K][N];
+	byte b[N][N];
 //	byte x[20][20];
 	int h, i, j;
 
